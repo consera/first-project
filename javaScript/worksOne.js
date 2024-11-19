@@ -32,7 +32,7 @@ if(test === true){
         const task = document.createElement("li");
         task.classList.add("task" , `task-${taskPriority}`);
         task.innerHTML= `
-            <div id= "delete">
+            <div id= "sortedTasks" class= "sortedTasks">
                 <strong>${total[i]}</strong>
                 <div>${total[i+1]}</div>
             </div>
@@ -49,7 +49,7 @@ if(test === true){
             const task = document.createElement("li");
             task.classList.add("task" , `task-${taskPriority}`);
             task.innerHTML= `
-                <div id= "delete">
+                <div id= "sortedTasks" class= "sortedTasks">
                     <strong>${total[i]}</strong>
                     <div>${total[i+1]}</div>
                 </div>
