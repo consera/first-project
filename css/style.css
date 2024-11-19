@@ -1,0 +1,100 @@
+:root{
+    --text-color: rgb(124, 124, 214);
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    display:grid;
+    margin: 50px;
+    background-color: rgb(247, 247, 251);
+    padding: 20px;
+    grid-template-columns: 70% 30%;
+}
+.container {
+    
+    margin: auto;
+    padding: 25% 10px;
+}
+
+
+.tasks {
+    height: 700px;
+    align-items: center;
+    background: #e7f1ff;
+    border-radius: 20px;
+    width: 700px;
+    box-shadow: 0px 2px 2px  var(--text-color);
+   }
+  .container #tasks ul li {
+    text-align: center;
+    list-style: none;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+    font-size: 25px;
+}
+.container #tasks ul li label  {
+     display: block;
+     margin-bottom: 20px;
+     margin-top: 10px;
+     font-weight: 600; 
+     padding: 15px 0 ;
+    
+
+}
+.container #tasks ul li label.priorityLabel{
+    display: inline-block;
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-top: 20px;
+}
+.container #tasks ul li #taskName {
+    padding: 10px 50px;
+    border-radius: 20px;
+    border-color: var(--text-color);
+    border: 1px;
+}
+.container #tasks ul li #taskDescription  {
+    height: 150px;
+    width: 600px;
+    border-radius: 20px;
+    border-color: var(--text-color);
+    border: 1px
+}
+.container #tasks ul li #taskDescription:hover,
+.container #tasks ul li #taskName:hover{
+    box-shadow:  3px 2px 2px var(--text-color);
+}
+.container #tasks ul li #taskPriority{
+   accent-color: var(--text-color);
+   color: var(--text-color);
+   border-color: var(--text-color);
+   width: 70px;
+   border-radius: 20px;
+   text-align: center;
+}
+.container #tasks ul li input{
+    box-shadow:  3px 2px 2px rgba(165, 201, 255, 0.267);
+}
+.container #tasks ul li button{
+        width: 110px;
+        height: 35px;
+        margin-top: 100px;
+        background-color: white;
+        border-radius: 20px;
+        border-color: transparent;
+        color: var(--text-color);
+        font-weight: bold;
+        font-size: 15px;
+
+}
+.container #tasks ul li:last-of-type input:hover{
+    background-color: var(--text-color);
+    color: white;
+    box-shadow:  4px 2px 2px white;
+    }
+.container #tasks ul li:first-of-type label{
+    padding-top: 35px;
+}

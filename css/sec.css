@@ -1,0 +1,26 @@
+:root{
+    --text-color: rgb(124, 124, 214);
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    display:grid;
+    grid-template-columns: 70% 30%;
+}
+ul {
+    list-style: none;
+}
+.container{
+   padding-left: 15px;
+   padding-right: 15px;
+   margin-left: auto;
+   margin-right: auto;
+}
+.secCon {
+    background-image: url("../img/task.jpeg");
+    background-size: cover;
+}

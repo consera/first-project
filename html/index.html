@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css">
+    
+</head>
+<body>
+    <div class="container">
+       <ul id="taskLi"></ul>
+    </div>
+    <div class="container" >
+        <div class="secCon">
+            <form id="tasks" class="tasks">
+                <ul>
+                    <li>
+                        <label for="taskName">Task Name</label>
+                        <input type="text" id="taskName" name="taskName">
+                    </li>
+                    <li>
+                        <label for="taskDescription">Task Description</label>
+                        <input type="text" id="taskDescription" name="taskDescription">
+                    </li> 
+                    <li>
+                        <label for="taskPriority" class="priorityLabel">Priority</label>
+                        <select name="taskPriority" id="taskPriority">
+                            <option value="1"> Low </option>
+                            <option value="2"> Mid </option>
+                            <option value="3"> High </option>
+                        </select>
+                    </li>
+                    <li>
+                        <button type="submit">Add</button>
+                    </li>
+                </ul>
+            </form>
+            
+        </div>
+    </div>
+    <script src="/javaScript/sec.js"></script>
+</body>
+</html>
