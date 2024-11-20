@@ -10,6 +10,13 @@
 <body>
     <div class="container">
        <ul id="taskLi"></ul>
+        <nav id="timer" class="timer">
+                <span class="close"><img src="/img/close.png" alt="x"></span>
+                <input type="text" name="timer1" id="timer" value="25" min="00" max="59" maxlength="2">
+                <div>:</div>
+                <input type="text" name="timer2" id="timer" value="00" min="00" max="59" maxlength="2">
+                <button id="start">start</button>
+            </nav>
     </div>
     <div class="container" >
         <div class="secCon">
@@ -17,7 +24,7 @@
                 <ul>
                     <li>
                         <label for="taskName">Task Name</label>
-                        <input type="text" id="taskName" name="taskName">
+                        <input type="text" id="taskName" name="taskName" required>
                     </li>
                     <li>
                         <label for="taskDescription">Task Description</label>
@@ -36,7 +43,7 @@
                     </li>
                 </ul>
             </form>
-            
+           
         </div>
     </div>
     <script src="/javaScript/worksOne.js"></script>
