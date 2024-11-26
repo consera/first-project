@@ -1,33 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="/css/style.css">
-    
+    <link rel="stylesheet" href="/css/sec.css">
+    <script src="https://kit.fontawesome.com/def52a904b.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
     <div class="container">
-            <ul id="taskLi">  
-                <img src="/img/check.png" alt="check" class="check"  >             
-                </ul>
-                <div id="container">
-                    <span class="close icon">
-                        <img src="/img/close.png" alt="x"> 
-                    </span>
-                    You made a 
-                    <div id=flip>
-                        <div><div>AweSoMe</div></div>
-                        <div><div>great</div></div>
-                        <div><div>excellent</div></div>
-                    </div>
-                    Job!
-                    </div>
-                    
-            
+        <ul id="taskLi">
+
+        </ul>
+        <div id="container" >
+            <span class="close icon">
+                <img src="/img/close.png" alt="x">
+            </span>
+            You made a
+            <div id=flip>
+                <div>
+                    <div>AweSoMe</div>
+                </div>
+                <div>
+                    <div>great</div>
+                </div>
+                <div>
+                    <div>excellent</div>
+                </div>
+            </div>
+            Job!
+        </div>
+
+       
+
     </div>
-    <div class="container" >
+    <div class="container box">
         <div class="secCon">
             <form id="tasks" class="tasks">
                 <ul>
@@ -38,7 +47,7 @@
                     <li>
                         <label for="taskDescription">Task Description</label>
                         <input type="text" id="taskDescription" name="taskDescription">
-                    </li> 
+                    </li>
                     <li>
                         <label for="taskPriority" class="priorityLabel">Priority</label>
                         <select name="taskPriority" id="taskPriority">
@@ -48,14 +57,20 @@
                         </select>
                     </li>
                     <li>
+                        <label for="taskDeadline">Add Deadline</label>
+                        <input type="date" id="taskDeadline" name="taskDeadline">
+                      </li>
+                    <li>
                         <button type="submit">Add</button>
                     </li>
                 </ul>
-        
+
             </form>
-          
+
         </div>
     </div>
+  
     <script src="/javaScript/worksOne.js"></script>
 </body>
+
 </html>
