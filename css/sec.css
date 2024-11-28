@@ -1,13 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:700');
 :root{
-    --text-color: rgb(124, 124, 214);
-    --bars-color: #e7f1ff;
+    --text-color: rgb(2, 2, 11);
+    --bars-color: #e1f1e4;
     --radius-px: 20px;
     --button-shadow:4px 2px 2px white;
     --shadow: 0px 2px 2px  var(--text-color);
+    /* --button-border-color */
     --text-font-family:  'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }   
-* {
+* { 
+
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -90,7 +92,7 @@ body {
     margin-bottom: 40px;
     background-color: white;
     border-radius: var(--radius-px);
-    border-color: transparent;
+    border-color: var(--shadow);
     color: var(--text-color);
     font-weight: bold;
     font-size: 15px;
@@ -119,13 +121,40 @@ body {
     margin: 10px;
     
 }
+.sortedTasks .taskDec{
+    margin-bottom: 20px;
+}
+.sortedTasks .taskInfo{
+    display: inline-flex;
+    gap: 40px; 
+    
+
+}
+.sortedTasks .taskInfo .taskColor{
+    display: inline-flex;
+    gap: 50px;
+}
+.sortedTasks .taskInfo .taskPriorityDisplay{
+    display: inline-flex;
+    gap: 30px;
+    height: 35px;
+}
+.sortedTasks .taskInfo .taskPriorityDisplay p{
+    padding-top: 5px;  
+}
+.sortedTasks .taskInfo .taskPriorityDisplay .para{
+    width: 100px;
+    background-color: #fff;
+    border-radius: var(--radius-px);
+    box-shadow: var(--shadow);
+}
 /* .sortedTasks .icon .dots, */
 .container img.check{
     margin-left: 70px;
 }
 .sortedTasks .space .icon, 
-nav .close img, 
-#container .close img,
+nav .icon img, 
+#container .ç img,
 .container img.check{
     width: 15px;
     height: 15px;
@@ -161,13 +190,13 @@ nav{
 nav.open{
     transform: translateY(0);
 }
-#container .close{
+#container .icon{
     position: fixed;
     padding-left: 15px;
     padding-bottom: 400px ;
 }
-nav .close img:hover, 
-#container .close img:hover {
+nav .icon img:hover, 
+#container .icon img:hover {
     background-color: rgba(131, 131, 210, 0.459);
     border-radius: var(--radius-px);
 }
@@ -186,12 +215,12 @@ button.delete {
     height: 35px;
     background-color: white;
     border-radius: 20px;
-    border-color: transparent;
+    border-color: var(--shadow);
     font-weight: bold;
     font-size: 15px;
     display: inline-block;
 }
-#open .close{
+#open .icon{
     position: relative;
     left: -90px;
 }
@@ -240,10 +269,10 @@ button.delete:hover {
     transition: 0.8s;
     transform: translateY(-4000%);
   }
-  #container .close{
+  #container .icon{
    position: absolute;
   }
-  #container .close img{
+  #container .icon img{
      position: fixed;
     left: 20px;
     top: 20px;
@@ -287,6 +316,10 @@ button.delete:hover {
     100% {margin-top:-270px;}
   }
   .movingArrow{
+    margin-top: 10px;
+    width: 60px;
+    height: 30px;
+    display: inline-block;
     color: rgba(255, 0, 0, 0.604);
     font-size: 25px;
     animation: move 1s linear infinite;
@@ -318,27 +351,34 @@ strong{
     border-bottom: dashed;
 }
 #color{
-  padding-top: 7px;
-  width: 150px;
-  height: 35px;
+  padding: 7px 10px 0 10px;
+  width: fit-content;
+  height: fit-content;
   background-color: #fff;
   border-radius: var(--radius-px);
   box-shadow: var(--button-shadow);
 }
-.red{
+.sortedTasks .taskInfo .taskColor .red{
     border: 2px solid rgba(255, 0, 0, 0.575);
 }
-.yellow{
-   
-    border: 2px solid rgba(255, 140, 0, 0.575);
+.sortedTasks .taskInfo .taskColor  .orange{
+    border: 2px solid rgba(255, 136, 0, 0.575);
 }
-#taskDeadline{
+.sortedTasks .taskInfo .taskColor  .yellow{
+   
+    border: 2px solid rgba(255, 213, 0, 0.575);
+}
+#taskDeadline,
+#taskTimeDeadline{
     border-radius: 20px;
-    color: rgb(124, 124, 214);
+    color: var(--text-color);
     border-color: transparent;
     height: 40px;
     width: 200px;
     font-size: 15px;
     text-align: center;
+}
+#taskTimeDeadline{
+    width: 100px;
 }
 

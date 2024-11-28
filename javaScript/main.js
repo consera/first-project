@@ -3,53 +3,81 @@ let l = [];
 let m = [];
 let h = [];
 let total = [];
+let icon = document.querySelector(".icon");
+let nav = document.querySelector("nav");
+let close = document.querySelector(".close");
+let del = document.querySelector(".delete");
 const taskLi = document.getElementById("taskLi");
+let tD = null;
+let vP = 0;
 
-// Load tasks from localStorage on page load
-window.onload = function() {
+window.onload = function () {
   loadTasksFromLocalStorage();
 };
 
-// Handle form submission to add a new task
+// Submit event for adding tasks
 tasks.addEventListener("submit", (e) => {
   e.preventDefault();
-
+  const dateTime = new Date(document.getElementById("taskDeadline").value);
+  const taskTD = document.getElementById("taskTimeDeadline").value;
   const taskName = document.getElementById("taskName").value;
   const taskDescription = document.getElementById("taskDescription").value;
   const taskPriority = document.getElementById("taskPriority").value;
-  const taskDeadline = document.getElementById("taskDeadline").value;
+  let taskDateDeadLine;
+  let taskDeadline;
+  
+  const currentDate1 = new Date();
+  const dueDate1 = new Date(taskDeadline);
+  const timeDifference1 = dueDate1 - currentDate1;
+  const taskSecondsRemaining = Math.floor(timeDifference1 / 1000);
+
+  if (taskTD) {
+    tD = true;
+    taskDateDeadLine = String(dateTime.toISOString().split("T")[0]);
+    taskDeadline = taskDateDeadLine + " " + document.getElementById("taskTimeDeadline").value + ":00";
+  } else {
+    taskDeadline = dateTime;
+    tD = false;
+  }
+
+  if (taskPriority === "1") {
+    vP = "Low";
+  } else if (taskPriority === "2") {
+    vP = "Med";
+  } else {
+    vP = "High";
+  }
 
   const group = {
     name: taskName,
     description: taskDescription,
     priority: taskPriority,
+    valuePriority: vP,
     deadline: taskDeadline,
-    timerSeconds: 2, // Initial timer seconds (you can adjust this)
+    timerSeconds: 1500,
     timerInterval: null,
     completed: false,
+    secondsRemaining: taskSecondsRemaining
   };
 
-  // Add the task to the corresponding priority array
   if (taskPriority === "1") {
     l.push(group);
+    l.sort((a, b) => a.secondsRemaining - b.secondsRemaining);
   } else if (taskPriority === "2") {
     m.push(group);
+    m.sort((a, b) => a.secondsRemaining - b.secondsRemaining);
   } else {
     h.push(group);
+    h.sort((a, b) => a.secondsRemaining - b.secondsRemaining);
   }
 
-  // Combine all the tasks into the `total` array based on priority
   total = [...h, ...m, ...l];
-
-  // Clear the task list, display the updated tasks, and save to localStorage
   taskLi.innerHTML = "";
   displayTasks(total);
   saveTasksToLocalStorage();
-  addEventListenersToTaskButtons();
-  tasks.reset();  // Reset the form after adding the task
+  tasks.reset();
 });
 
-// Function to add event listeners to task buttons (Start, Stop, Rest, Delete)
 function addEventListenersToTaskButtons() {
   document.querySelectorAll(".icon").forEach((icon) => {
     icon.addEventListener("click", (event) => {
@@ -57,36 +85,32 @@ function addEventListenersToTaskButtons() {
       nav.classList.add("open");
     });
   });
-
   document.querySelectorAll(".close").forEach((close) => {
     close.addEventListener("click", (event) => {
       const nav = event.target.closest("nav");
       nav.classList.remove("open");
     });
   });
-
+  
   document.querySelectorAll(".start").forEach((button) => {
     button.addEventListener("click", startTimer);
   });
-
   document.querySelectorAll(".stop").forEach((button) => {
     button.addEventListener("click", stopTimer);
   });
-
   document.querySelectorAll(".rest").forEach((button) => {
     button.addEventListener("click", restTimer);
   });
-
-  deleteClick();  // Add event listeners for delete buttons
+  deleteClick();
 }
 
-// Function to start the timer
+// Timer controls logic
 function startTimer(event) {
   const index = event.target.getAttribute("data-index");
   const task = total[index];
-
+  
   if (task.timerInterval) {
-    clearInterval(task.timerInterval); // Clear any existing interval
+    clearInterval(task.timerInterval);
   }
 
   task.timerInterval = setInterval(() => {
@@ -99,12 +123,11 @@ function startTimer(event) {
       playAlarm();
       task.completed = true;
       const checked = event.target.closest("li").querySelector(".check");
-      checked.classList.remove("check");
+      checked.classList.add("checked");
     }
   }, 1000);
 }
 
-// Function to stop the timer
 function stopTimer(event) {
   const index = event.target.getAttribute("data-index");
   const task = total[index];
@@ -112,41 +135,76 @@ function stopTimer(event) {
   clearInterval(task.timerInterval);
   task.timerInterval = null;
   updateTimerDisplay(task, index);
+  saveTasksToLocalStorage();
 }
 
-// Function to reset the timer
 function restTimer(event) {
   const index = event.target.getAttribute("data-index");
   const task = total[index];
 
-  task.timerSeconds = 1500; // Reset to 25 minutes
+  task.timerSeconds = 1500;
   updateTimerDisplay(task, index);
 }
 
-// Function to update the timer display
 function updateTimerDisplay(task, index) {
   const timerValueElement = document.querySelectorAll(".task-item .value")[index];
   timerValueElement.textContent = formatTime(task.timerSeconds);
 }
 
-// Function to format time in MM:SS format
+function updateTimeDeadline(task, index) {
+  const timerValueElement = document.querySelectorAll(".task-item #color")[index];
+  const currentDate1 = new Date();
+  const dueDate1 = new Date(task.deadline);
+  const timeDifference1 = dueDate1 - currentDate1;
+  const taskSecondsRemaining = Math.floor(timeDifference1 / 1000);
+  
+  task.secondsRemaining = taskSecondsRemaining;
+  timerValueElement.textContent = formatTime1(task.secondsRemaining, true);
+}
+
 function formatTime(seconds) {
   const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
   const secondsLeft = (seconds % 60).toString().padStart(2, "0");
   return `${minutes}:${secondsLeft}`;
 }
 
-// Function to play alarm when timer reaches 0
+function formatTime1(seconds, isDeadline) {
+  if (isDeadline) {
+    if (seconds >= 0) {
+      const days = Math.floor(seconds / (24 * 60 * 60));
+      const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
+      const minutes = Math.floor((seconds % (60 * 60)) / 60);
+      const remainingSeconds = seconds % 60;
+      return `${days} d ${hours} hr ${minutes} min ${remainingSeconds} sec left`;
+    } else {
+      const pSec = -seconds;
+      const days = Math.floor(pSec / (24 * 60 * 60));
+      const hours = Math.floor((pSec % (24 * 60 * 60)) / (60 * 60));
+      const minutes = Math.floor((pSec % (60 * 60)) / 60);
+      const remainingSeconds = pSec % 60;
+      return `Overdue: ${days} d ${hours} hr ${minutes} min ${remainingSeconds} sec had gone`;
+    }
+  } else {
+    if (seconds >= 0) {
+      const days = Math.floor(seconds / (24 * 60 * 60));
+      const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
+      return `${days} d ${hours} hr left`;
+    } else {
+      const pSec = -seconds;
+      const days = Math.floor(pSec / (24 * 60 * 60));
+      const hours = Math.floor((pSec % (24 * 60 * 60)) / (60 * 60));
+      return `Overdue: ${days} d ${hours} hr had gone`;
+    }
+  }
+}
+
 function playAlarm() {
   const audio = new Audio("/audio/beeb.wav");
   audio.play();
 }
 
-// Function to delete a task
 function deleteTask(index) {
   const task = total[index];
-  
-  // Remove the task from the correct priority array
   if (task.priority === "1") {
     l.splice(index, 1);
   } else if (task.priority === "2") {
@@ -154,66 +212,40 @@ function deleteTask(index) {
   } else {
     h.splice(index, 1);
   }
-
-  // Rebuild the total array after deletion
   total = [...h, ...m, ...l];
-  
-  // Save updated tasks to localStorage and update the UI
   saveTasksToLocalStorage();
   taskLi.innerHTML = "";
   displayTasks(total);
-  addEventListenersToTaskButtons();
 }
 
-// Function to add event listeners for delete buttons
 function deleteClick() {
   document.querySelectorAll(".delete").forEach((del) => {
     del.addEventListener("click", (event) => {
       const index = event.target.getAttribute("data-index");
       deleteTask(index);
+      addEventListenersToTaskButtons();
     });
   });
 }
 
-// Function to save tasks to localStorage
 function saveTasksToLocalStorage() {
   localStorage.setItem('tasks', JSON.stringify(total));
 }
 
-// Function to load tasks from localStorage
 function loadTasksFromLocalStorage() {
   const storedTasks = localStorage.getItem('tasks');
-
   if (storedTasks) {
-    total = JSON.parse(storedTasks);  // Load tasks from localStorage
-    // Display tasks after loading from localStorage
+    total = JSON.parse(storedTasks);
+    l = total.filter(task => task.priority === "1");
+    m = total.filter(task => task.priority === "2");
+    h = total.filter(task => task.priority === "3");
     displayTasks(total);
   }
 }
 
-// Function to display tasks on the page
 function displayTasks(total) {
-  total.forEach((task, i) => {
-    const currentDate = new Date();
-    const dueDate = new Date(task.deadline);
-    const timeDifference = dueDate - currentDate;
-    const hoursRemaining = Math.floor(timeDifference / (1000 * 60 * 60));
-    const days = Math.floor(hoursRemaining / 24);
-    const hours = Math.floor(hoursRemaining % 24);
-
-    let color;
-    if (hoursRemaining > 0 && hoursRemaining <= 24) {
-      color = `<div class="movingArrow"> ---></div><div id="color" class="red">${days} d ${hours} hr left</div>`;
-    } else if (hoursRemaining > 24 && hoursRemaining < 48) {
-      color = `<div id="color" class="yellow">${days} d ${hours} hr left</div>`;
-    } else if (hoursRemaining > 48 && hoursRemaining < 96) {
-      color = `<div id="color" class="yellow">${days} d ${hours} hr left</div>`;
-    } else if (hoursRemaining > 96) {
-      color = `<div id="color">${days} d ${hours} hr left</div>`;
-    } else {
-      color = ``;
-    }
-
+  for (let i = 0; i < total.length; i++) {
+    const task = total[i];
     const taskItem = document.createElement("li");
     taskItem.classList.add("task", `task-${task.priority}`);
     taskItem.innerHTML = `
@@ -224,7 +256,7 @@ function displayTasks(total) {
             <img src="/img/timer.png" alt="dots" class="dots">
           </span>
         </div>
-        <nav id="open" class="task-nav">
+        <nav class="task-nav">
           <span class="close">
             <img src="/img/close.png" alt="x">
           </span>
@@ -235,18 +267,21 @@ function displayTasks(total) {
           <button class="rest" data-index="${i}">Rest</button>
           <button class="stop" data-index="${i}">Stop</button>
         </nav>
-
         <div>${task.description}</div>
-        
+        <div class="taskInfo">
+          <div class="taskColor">${formatTime1(task.secondsRemaining, true)}</div>
+          <div class="taskPriorityDisplay">
+            <p>Priority level: </p>
+            <p class="para">${task.valuePriority}</p>
+          </div>
+        </div>
         <div class="space">
-          ${color}
           <button class="delete" data-index="${i}">Delete</button>
           <img src="/img/check.png" alt="check" class="check ${task.completed ? 'checked' : ''}">
         </div>
       </div>
     `;
     taskLi.appendChild(taskItem);
-  });
-
-  addEventListenersToTaskButtons();
+    addEventListenersToTaskButtons();
+  }
 }
