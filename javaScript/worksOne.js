@@ -52,7 +52,7 @@ tasks.addEventListener("submit", (e) => {
     valuePriority: vP,
     testTD: tD,
     deadline: taskDeadline,
-    timerSeconds: 2,
+    timerSeconds: 1500,
     timerInterval: null,
     completed: false,
     secondsRemaining: taskSecondsRemaining
@@ -282,7 +282,7 @@ function deleteTask(index) {
   total = [...h, ...m, ...l];
 
   saveTasksToLocalStorage(); 
-  window.onload();
+  location.reload();
 
   taskLi.innerHTML = "";
 
