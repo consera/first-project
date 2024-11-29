@@ -32,13 +32,9 @@ tasks.addEventListener("submit", (e) => {
     tD= true;
     taskDateDeadLine = String(dateTime.toISOString().split("T")[0]);
     taskDeadline = taskDateDeadLine + " " + document.getElementById("taskTimeDeadline").value + ":00";
-    const dueDate1 = new Date(taskDeadline);
-    const timeDifference1 = dueDate1 - currentDate1;
-    taskSecondsRemaining = Math.floor(timeDifference1 / 1000);
   }else{
     taskDeadline= dateTime;
     tD= false;
-    // taskSecondsRemaining = 0;
   }
 
   if (taskPriority === "1") {
@@ -56,7 +52,7 @@ tasks.addEventListener("submit", (e) => {
     valuePriority: vP,
     testTD: tD,
     deadline: taskDeadline,
-    timerSeconds: 1500,
+    timerSeconds: 2,
     timerInterval: null,
     completed: false,
     secondsRemaining: taskSecondsRemaining
@@ -79,6 +75,7 @@ tasks.addEventListener("submit", (e) => {
 
   displayTasks(total);
   saveTasksToLocalStorage();
+  location.reload();
   tasks.reset();
 });
 
@@ -163,7 +160,7 @@ function updateTimerDisplay(task, index) {
   timerValueElement.textContent = formatTime(task.timerSeconds);
 }
 
-function startTimerTask(total, index) {
+function startTimerTask(index) {
   const task = total[index];
   console.log("task: " + task);
 
@@ -181,24 +178,57 @@ function formatTime(seconds) {
 }
 
 function updateTimeDeadline(task, index) {
-  if(task.deadline !== null){
-      const timerValueElement = document.querySelectorAll(".task-item #color")[index];
-      const currentDate1 = new Date();
-      const dueDate1 = new Date(task.deadline);
-      const timeDifference1 = dueDate1 - currentDate1;
-      const taskSecondsRemaining = Math.floor(timeDifference1 / 1000);
+  if (task.deadline) { 
+    const taskItems = document.querySelectorAll(".task-item #color");
 
-      task.secondsRemaining = taskSecondsRemaining;
-      timerValueElement.textContent = formatTime1(task ,task.secondsRemaining);
+    if (taskItems.length > index && taskItems[index]) {
+      const timerValueElement = taskItems[index];
+
+      const currentDate = new Date();
+      const dueDate = new Date(task.deadline);
+      const timeDifference = dueDate - currentDate;
+      const taskSecondsRemaining = Math.floor(timeDifference / 1000);
+
+      if (taskSecondsRemaining >= 0) {
+        task.secondsRemaining = taskSecondsRemaining;
+        timerValueElement.textContent = formatTime1(task, task.secondsRemaining);  
+      } else {
+        task.secondsRemaining = taskSecondsRemaining;
+        timerValueElement.textContent = formatTime1(task, task.secondsRemaining); 
+      }
+      console.log(task.deadline);
+    } else {
+      console.error("there is no index", index);
     }
-    // else{
-    //   const timerValueElement = document.querySelectorAll(".task-item #color")[index];
-    //   timerValueElement.textContent = formatTime1(task ,task.secondsRemaining);
-    // }
+  } else {
+    formatTime1(task, task.secondsRemaining);
+    console.log(task.deadline);
   }
+  
+}
+
+
+// function updateTimeDeadline(task, index) {
+//   if(task.deadline !== null && task.deadline !== ""){
+//       const timerValueElement = document.querySelectorAll(".task-item #color")[index];
+//       const currentDate1 = new Date();
+//       const dueDate1 = new Date(task.deadline);
+//       const timeDifference1 = dueDate1 - currentDate1;
+//       const taskSecondsRemaining = Math.floor(timeDifference1 / 1000);
+
+//       task.secondsRemaining = taskSecondsRemaining;
+//       timerValueElement.textContent = formatTime1(task ,task.secondsRemaining);
+//       console.log(timerValueElement.textContent);
+//     }
+//     else{
+    
+//     formatTime1(task ,task.secondsRemaining);
+//       // console.log(timerValueElement);
+//     }
+//   }
 
 function formatTime1( task , seconds) {
-    if(task.testTD === true){
+    if(task.testTD === true && task.deadline !== null){
       if(seconds >= 0){
         const days = Math.floor(seconds / (24 * 60 * 60)); 
         const hours = Math.floor((seconds % (24 * 60 * 60)/ (60 * 60) )); 
@@ -215,7 +245,7 @@ function formatTime1( task , seconds) {
         return `Over due: ${days} d ${hours} hr ${minutes} min ${remainingSeconds} sec had gone`;
       }
     }
-    else{
+    else if (task.deadline !== null){
       if(seconds >= 0){
         const days = Math.floor(seconds / (24 * 60 * 60)); 
         const hours = Math.floor((seconds % (24 * 60 * 60)/ (60 * 60) )); 
@@ -227,6 +257,9 @@ function formatTime1( task , seconds) {
         const hours = Math.floor((pSec % (24 * 60 * 60)/ (60 * 60) )); 
         return `Over due: ${days} d ${hours} hr had gone`;
       }
+    }
+    else if(task.deadline === null){
+      return `There no Deadline for this Task`;
     }
   }
 
@@ -249,6 +282,7 @@ function deleteTask(index) {
   total = [...h, ...m, ...l];
 
   saveTasksToLocalStorage(); 
+  window.onload();
 
   taskLi.innerHTML = "";
 
@@ -287,19 +321,20 @@ function loadTasksFromLocalStorage() {
     m = total.filter(task => task.priority === "2");
     h = total.filter(task => task.priority === "3");  
 
+    total = [...h, ...m, ...l];
     displayTasks(total);
   }
 }
 
 function displayTasks(total) {
-  for (i = 0; i < total.length; i++) {
-    const task = total[i];
-    const old_seconds = task.secondsRemaining;
+  total.forEach((task, i) => {
     const taskItem = document.createElement("li");
-  
     taskItem.classList.add("task", `task-${task.priority}`);
+    
+    const old_seconds = task.secondsRemaining;
+    let color = "";
   
-    if(task.deadline){
+    if(task.deadline !== null){
       const currentDate = new Date();
       const dueDate = new Date(task.deadline);
       const timeDifference = dueDate - currentDate;
@@ -307,28 +342,29 @@ function displayTasks(total) {
       console.log(timeDifference);
 
       if (timeDifference < 0){
-        color= `
-            <div class="movingArrow"> ---></div>  
-            <div id="color" class="red">${formatTime1(task,old_seconds)}</div>
-            `;
+          color= `
+              <div class="movingArrow"> ---></div>  
+              <div id="color" class="red">${formatTime1(task,old_seconds)}</div>
+              `;
+        }
+        else if(timeDifference > 0 && timeDifference <= (24 * 60 * 60 * 1000)){ 
+          color= ` <div id="color" class="red">${formatTime1(task,old_seconds)}</div>`;
+        }
+        else if  (timeDifference > (24 * 60 * 60) && timeDifference < (2 * 24 * 60 * 60 * 1000)){
+          color= `<div id="color" class="orange">${formatTime1(task,old_seconds)}</div>`;
+        }
+        else if  (timeDifference > (2 * 24 * 60 * 60) && timeDifference < (4 * 24 * 60 * 60 * 1000)){
+          color= `<div id="color" class="yellow">${formatTime1(task,old_seconds)}</div>`;
+        }
+        else if ((4 * 24 * 60 * 60 * 1000) < timeDifference){
+          color= `<div id="color">${formatTime1(task,old_seconds)}</div>`;
+        } 
+        else {
+          color = `<div id="color">${formatTime1(task,old_seconds)}</div>`;
+        } 
       }
-      else if(timeDifference > 0 && timeDifference <= (24 * 60 * 60 * 1000)){ 
-        color= ` <div id="color" class="red">${formatTime1(task,old_seconds)}</div>`;
-      }
-      else if  (timeDifference > (24 * 60 * 60) && timeDifference < (2 * 24 * 60 * 60 * 1000)){
-        color= `<div id="color" class="orange">${formatTime1(task,old_seconds)}</div>`;
-      }
-      else if  (timeDifference > (2 * 24 * 60 * 60) && timeDifference < (4 * 24 * 60 * 60 * 1000)){
-        color= `<div id="color" class="yellow">${formatTime1(task,old_seconds)}</div>`;
-      }
-      else if ((4 * 24 * 60 * 60 * 1000) < timeDifference){
-        color= `<div id="color">${formatTime1(task,old_seconds)}</div>`;
-      } 
-      else {
-        color= ``;
-      } }
     else {
-        color= ``;
+        color= `<div id="color">${formatTime1(task,old_seconds)}</div>`;
     }
 
     taskItem.innerHTML = `
@@ -370,9 +406,9 @@ function displayTasks(total) {
         </div>
     </div>
                     `;
-taskLi.appendChild(taskItem);
-startTimerTask(total, i);
-};
-addEventListenersToTaskButtons();
-
+    taskLi.appendChild(taskItem);
+    startTimerTask(i);
+  });
+  addEventListenersToTaskButtons();
+  
 };

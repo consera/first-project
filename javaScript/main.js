@@ -1,35 +1,29 @@
 const tasks = document.getElementById("tasks");
+const taskLi = document.getElementById("taskLi");
 let l = [];
 let m = [];
 let h = [];
 let total = [];
-let icon = document.querySelector(".icon");
-let nav = document.querySelector("nav");
-let close = document.querySelector(".close");
-let del = document.querySelector(".delete");
-const taskLi = document.getElementById("taskLi");
 let tD = null;
 let vP = 0;
+let taskSecondsRemaining = 0;
 
-window.onload = function () {
+window.onload = function() {
   loadTasksFromLocalStorage();
 };
 
-// Submit event for adding tasks
+// عند إضافة مهمة جديدة
 tasks.addEventListener("submit", (e) => {
   e.preventDefault();
+  const currentDate1 = new Date();
   const dateTime = new Date(document.getElementById("taskDeadline").value);
   const taskTD = document.getElementById("taskTimeDeadline").value;
   const taskName = document.getElementById("taskName").value;
   const taskDescription = document.getElementById("taskDescription").value;
   const taskPriority = document.getElementById("taskPriority").value;
-  let taskDateDeadLine;
-  let taskDeadline;
-  
-  const currentDate1 = new Date();
-  const dueDate1 = new Date(taskDeadline);
-  const timeDifference1 = dueDate1 - currentDate1;
-  const taskSecondsRemaining = Math.floor(timeDifference1 / 1000);
+
+  const timeDifference1 = dateTime - currentDate1;
+  taskSecondsRemaining = Math.floor(timeDifference1 / 1000);
 
   if (taskTD) {
     tD = true;
@@ -40,6 +34,7 @@ tasks.addEventListener("submit", (e) => {
     tD = false;
   }
 
+  // تحديد الأولوية
   if (taskPriority === "1") {
     vP = "Low";
   } else if (taskPriority === "2") {
@@ -53,6 +48,7 @@ tasks.addEventListener("submit", (e) => {
     description: taskDescription,
     priority: taskPriority,
     valuePriority: vP,
+    testTD: tD,
     deadline: taskDeadline,
     timerSeconds: 1500,
     timerInterval: null,
@@ -60,194 +56,51 @@ tasks.addEventListener("submit", (e) => {
     secondsRemaining: taskSecondsRemaining
   };
 
+  // إضافة المهمة حسب الأولوية
   if (taskPriority === "1") {
     l.push(group);
-    l.sort((a, b) => a.secondsRemaining - b.secondsRemaining);
   } else if (taskPriority === "2") {
     m.push(group);
-    m.sort((a, b) => a.secondsRemaining - b.secondsRemaining);
   } else {
     h.push(group);
-    h.sort((a, b) => a.secondsRemaining - b.secondsRemaining);
   }
 
+  // ترتيب المهام
   total = [...h, ...m, ...l];
-  taskLi.innerHTML = "";
-  displayTasks(total);
+  
+  taskLi.innerHTML = ""; // مسح قائمة المهام الحالية
+  displayTasks(total);  // عرض المهام من جديد
   saveTasksToLocalStorage();
   tasks.reset();
 });
 
-function addEventListenersToTaskButtons() {
-  document.querySelectorAll(".icon").forEach((icon) => {
-    icon.addEventListener("click", (event) => {
-      const nav = event.target.closest("li").querySelector("nav");
-      nav.classList.add("open");
-    });
-  });
-  document.querySelectorAll(".close").forEach((close) => {
-    close.addEventListener("click", (event) => {
-      const nav = event.target.closest("nav");
-      nav.classList.remove("open");
-    });
-  });
-  
-  document.querySelectorAll(".start").forEach((button) => {
-    button.addEventListener("click", startTimer);
-  });
-  document.querySelectorAll(".stop").forEach((button) => {
-    button.addEventListener("click", stopTimer);
-  });
-  document.querySelectorAll(".rest").forEach((button) => {
-    button.addEventListener("click", restTimer);
-  });
-  deleteClick();
-}
-
-// Timer controls logic
-function startTimer(event) {
-  const index = event.target.getAttribute("data-index");
-  const task = total[index];
-  
-  if (task.timerInterval) {
-    clearInterval(task.timerInterval);
-  }
-
-  task.timerInterval = setInterval(() => {
-    task.timerSeconds--;
-    updateTimerDisplay(task, index);
-
-    if (task.timerSeconds <= 0) {
-      clearInterval(task.timerInterval);
-      task.timerInterval = null;
-      playAlarm();
-      task.completed = true;
-      const checked = event.target.closest("li").querySelector(".check");
-      checked.classList.add("checked");
-    }
-  }, 1000);
-}
-
-function stopTimer(event) {
-  const index = event.target.getAttribute("data-index");
-  const task = total[index];
-
-  clearInterval(task.timerInterval);
-  task.timerInterval = null;
-  updateTimerDisplay(task, index);
-  saveTasksToLocalStorage();
-}
-
-function restTimer(event) {
-  const index = event.target.getAttribute("data-index");
-  const task = total[index];
-
-  task.timerSeconds = 1500;
-  updateTimerDisplay(task, index);
-}
-
-function updateTimerDisplay(task, index) {
-  const timerValueElement = document.querySelectorAll(".task-item .value")[index];
-  timerValueElement.textContent = formatTime(task.timerSeconds);
-}
-
-function updateTimeDeadline(task, index) {
-  const timerValueElement = document.querySelectorAll(".task-item #color")[index];
-  const currentDate1 = new Date();
-  const dueDate1 = new Date(task.deadline);
-  const timeDifference1 = dueDate1 - currentDate1;
-  const taskSecondsRemaining = Math.floor(timeDifference1 / 1000);
-  
-  task.secondsRemaining = taskSecondsRemaining;
-  timerValueElement.textContent = formatTime1(task.secondsRemaining, true);
-}
-
-function formatTime(seconds) {
-  const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
-  const secondsLeft = (seconds % 60).toString().padStart(2, "0");
-  return `${minutes}:${secondsLeft}`;
-}
-
-function formatTime1(seconds, isDeadline) {
-  if (isDeadline) {
-    if (seconds >= 0) {
-      const days = Math.floor(seconds / (24 * 60 * 60));
-      const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
-      const minutes = Math.floor((seconds % (60 * 60)) / 60);
-      const remainingSeconds = seconds % 60;
-      return `${days} d ${hours} hr ${minutes} min ${remainingSeconds} sec left`;
-    } else {
-      const pSec = -seconds;
-      const days = Math.floor(pSec / (24 * 60 * 60));
-      const hours = Math.floor((pSec % (24 * 60 * 60)) / (60 * 60));
-      const minutes = Math.floor((pSec % (60 * 60)) / 60);
-      const remainingSeconds = pSec % 60;
-      return `Overdue: ${days} d ${hours} hr ${minutes} min ${remainingSeconds} sec had gone`;
-    }
-  } else {
-    if (seconds >= 0) {
-      const days = Math.floor(seconds / (24 * 60 * 60));
-      const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
-      return `${days} d ${hours} hr left`;
-    } else {
-      const pSec = -seconds;
-      const days = Math.floor(pSec / (24 * 60 * 60));
-      const hours = Math.floor((pSec % (24 * 60 * 60)) / (60 * 60));
-      return `Overdue: ${days} d ${hours} hr had gone`;
-    }
-  }
-}
-
-function playAlarm() {
-  const audio = new Audio("/audio/beeb.wav");
-  audio.play();
-}
-
-function deleteTask(index) {
-  const task = total[index];
-  if (task.priority === "1") {
-    l.splice(index, 1);
-  } else if (task.priority === "2") {
-    m.splice(index, 1);
-  } else {
-    h.splice(index, 1);
-  }
-  total = [...h, ...m, ...l];
-  saveTasksToLocalStorage();
-  taskLi.innerHTML = "";
-  displayTasks(total);
-}
-
-function deleteClick() {
-  document.querySelectorAll(".delete").forEach((del) => {
-    del.addEventListener("click", (event) => {
-      const index = event.target.getAttribute("data-index");
-      deleteTask(index);
-      addEventListenersToTaskButtons();
-    });
-  });
-}
-
-function saveTasksToLocalStorage() {
-  localStorage.setItem('tasks', JSON.stringify(total));
-}
-
-function loadTasksFromLocalStorage() {
-  const storedTasks = localStorage.getItem('tasks');
-  if (storedTasks) {
-    total = JSON.parse(storedTasks);
-    l = total.filter(task => task.priority === "1");
-    m = total.filter(task => task.priority === "2");
-    h = total.filter(task => task.priority === "3");
-    displayTasks(total);
-  }
-}
-
+// دالة لعرض المهام
 function displayTasks(total) {
-  for (let i = 0; i < total.length; i++) {
-    const task = total[i];
+  total.forEach((task, i) => {
     const taskItem = document.createElement("li");
     taskItem.classList.add("task", `task-${task.priority}`);
+    
+    const old_seconds = task.secondsRemaining;
+    let color = "";
+
+    // التحقق من الموعد النهائي للمهمة
+    if (task.deadline) {
+      const currentDate = new Date();
+      const dueDate = new Date(task.deadline);
+      const timeDifference = dueDate - currentDate;
+
+      // تحديد اللون حسب الوقت المتبقي
+      if (timeDifference < 0) {
+        color = `<div id="color" class="red">${formatTime1(task, old_seconds)}</div>`;
+      } else if (timeDifference <= (24 * 60 * 60 * 1000)) {
+        color = `<div id="color" class="red">${formatTime1(task, old_seconds)}</div>`;
+      } else if (timeDifference <= (2 * 24 * 60 * 60 * 1000)) {
+        color = `<div id="color" class="orange">${formatTime1(task, old_seconds)}</div>`;
+      } else {
+        color = `<div id="color">${formatTime1(task, old_seconds)}</div>`;
+      }
+    }
+
     taskItem.innerHTML = `
       <div id="sortedTasks" class="sortedTasks task-item">
         <div class="space">
@@ -257,7 +110,7 @@ function displayTasks(total) {
           </span>
         </div>
         <nav class="task-nav">
-          <span class="close">
+          <span class="icon">
             <img src="/img/close.png" alt="x">
           </span>
           <div id="timerValue">
@@ -267,9 +120,9 @@ function displayTasks(total) {
           <button class="rest" data-index="${i}">Rest</button>
           <button class="stop" data-index="${i}">Stop</button>
         </nav>
-        <div>${task.description}</div>
+        <div class="taskDec">${task.description}</div>
         <div class="taskInfo">
-          <div class="taskColor">${formatTime1(task.secondsRemaining, true)}</div>
+          <div class="taskColor">${color}</div>
           <div class="taskPriorityDisplay">
             <p>Priority level: </p>
             <p class="para">${task.valuePriority}</p>
@@ -282,6 +135,87 @@ function displayTasks(total) {
       </div>
     `;
     taskLi.appendChild(taskItem);
-    addEventListenersToTaskButtons();
+
+    // إضافة أحداث للمؤقتات
+    startTimerTask(i);
+  });
+
+  addEventListenersToTaskButtons();
+}
+
+// تحديث عرض الوقت
+function updateTimerDisplay(task, index) {
+  const timerValueElement = document.querySelectorAll(".task-item .value")[index];
+  if (timerValueElement) {
+    timerValueElement.textContent = formatTime(task.timerSeconds);
+  }
+}
+
+// دالة تشغيل المؤقت للمهمة
+function startTimerTask(index) {
+  const task = total[index];
+  if (task.timerInterval) {
+    clearInterval(task.timerInterval); 
+  }
+
+  task.timerInterval = setInterval(() => {
+    task.timerSeconds--;
+    updateTimerDisplay(task, index);
+
+    if (task.timerSeconds <= 0) {
+      clearInterval(task.timerInterval);
+      task.timerInterval = null;
+      playAlarm();
+      task.completed = true;
+      const checked = document.querySelectorAll(".task-item")[index].querySelector(".check");
+      checked.classList.add("checked");
+    }
+  }, 1000);
+}
+
+// تنسيق الوقت بشكل صحيح (دقائق وثواني)
+function formatTime(seconds) {
+  const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
+  const secondsLeft = (seconds % 60).toString().padStart(2, "0");
+  return `${minutes}:${secondsLeft}`;
+}
+
+// تنسيق الوقت للمواعيد النهائية
+function formatTime1(task, seconds) {
+  if (task.testTD) {
+    const days = Math.floor(seconds / (24 * 60 * 60));
+    const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
+    const minutes = Math.floor((seconds % (60 * 60)) / 60);
+    const remainingSeconds = seconds % 60;
+    return `${days} d ${hours} hr ${minutes} min ${remainingSeconds} sec left`;
+  } else {
+    const days = Math.floor(seconds / (24 * 60 * 60));
+    const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
+    return `${days} d ${hours} hr left`;
+  }
+}
+
+// تشغيل الإنذار عند انتهاء المهمة
+function playAlarm() {
+  const audio = new Audio("/audio/beeb.wav");
+  audio.play();
+}
+
+// حفظ المهام في localStorage
+function saveTasksToLocalStorage() {
+  localStorage.setItem('tasks', JSON.stringify(total));
+}
+
+// تحميل المهام من localStorage
+function loadTasksFromLocalStorage() {
+  const storedTasks = localStorage.getItem('tasks');
+  
+  if (storedTasks) {
+    total = JSON.parse(storedTasks);
+    l = total.filter(task => task.priority === "1");
+    m = total.filter(task => task.priority === "2");
+    h = total.filter(task => task.priority === "3");  
+    total = [...h, ...m, ...l];
+    displayTasks(total);
   }
 }

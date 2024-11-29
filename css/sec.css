@@ -154,7 +154,7 @@ body {
 }
 .sortedTasks .space .icon, 
 nav .icon img, 
-#container .ç img,
+#container .icon img,
 .container img.check{
     width: 15px;
     height: 15px;
@@ -299,10 +299,10 @@ button.delete:hover {
     background:var(--text-color);
   }
   #flip div:first-child div {
-    background:#c8aeff;
+    background:rgba(255, 0, 0, 0.575);
   }
   #flip div:last-child div {
-    background:#cce1ff;
+    background:rgba(255, 136, 0, 0.575);
   }
   
   @keyframes show {
