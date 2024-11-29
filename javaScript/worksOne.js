@@ -82,22 +82,38 @@ tasks.addEventListener("submit", (e) => {
 function addEventListenersToTaskButtons() {
   document.querySelectorAll(".icon").forEach((icon) => {
     icon.addEventListener("click", (event) => {
-      const nav = event.target.closest("li").querySelector("nav");
-      nav.classList.add("open");
+      if (event.target.closest("li").querySelector("nav")){
+        const nav = event.target.closest("li").querySelector("nav");
+        nav.classList.add("open");
+      }
+     else{
+      const div = event.target.closest("li").querySelector("div");
+        div.classList.add("open");
+     }
+      // this.classList.add("open");
     });
   });
   document.querySelectorAll(".icon").forEach((icon) => {
     icon.addEventListener("click", (event) => {
-      const nav = event.target.closest("nav");
-      nav.classList.remove("open");
+      if (event.target.closest("nav")){
+        const nav = event.target.closest("nav");
+        nav.classList.remove("open");
+      }
+     else{
+      const div = event.target.closest("div");
+        div.classList.remove("open");
+     }
+      // const nav = event.target.closest("nav");
+      // nav.classList.remove("open");
+      // this.classList.remove("open");
     });
   });
-  icon.onclick = function () {
-    this.parentElement.classList.add("open");
-  };
-  icon.onclick = function () {
-    this.parentElement.classList.remove("open");
-  };
+  // icon.onclick = function () {
+  //   this.parentElement.classList.add("open");
+  // };
+  // icon.onclick = function () {
+  //   this.parentElement.classList.remove("open");
+  // };
   document.querySelectorAll(".start").forEach((button) => {
     button.addEventListener("click", startTimer);
   });
@@ -110,6 +126,7 @@ function addEventListenersToTaskButtons() {
     button.addEventListener("click", restTimer);
   });
   deleteClick();
+  
 }; 
 
 function startTimer(event) {
@@ -282,12 +299,13 @@ function deleteTask(index) {
   total = [...h, ...m, ...l];
 
   saveTasksToLocalStorage(); 
-  location.reload();
+  
 
   taskLi.innerHTML = "";
 
   displayTasks(total);
   addEventListenersToTaskButtons();
+ 
 };
 
 function deleteClick() {
@@ -297,11 +315,14 @@ function deleteClick() {
         if (target.classList.contains("delete")) {
           const index = target.getAttribute("data-index");
           deleteTask(index);
-
+         
           const d = document.getElementById("container");
             console.log(d);
             d.classList.add("open");
             addEventListenersToTaskButtons();
+            if(addEventListenersToTaskButtons()){
+             location.reload();
+            }
           }
       });
   });
@@ -372,7 +393,7 @@ function displayTasks(total) {
         <div class="space">
             <strong>${task.name}</strong>
             <span class="icon">
-                <img src="/img/timer.png" alt="dots" class="dots">
+                <img src="/img/timer.png" alt="dots" class="dots icon">
             </span>
         </div>
         <nav id="open" class="task-nav">
