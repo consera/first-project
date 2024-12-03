@@ -1,6 +1,10 @@
 const tasks = document.getElementById("tasks");
 const taskLi = document.getElementById("taskLi");
+const taskUn = document.getElementById("unfinishedTasks");
+const taskFin = document.getElementById("finishedTasks");
 let icon = document.querySelector(".icon");
+let done = document.querySelector(".done");
+let uncompleted = document.querySelector(".uncompleted");
 let nav = document.querySelector("nav");
 let del = document.querySelector(".delete");
 let taskDateDeadLine;
@@ -86,10 +90,10 @@ function addEventListenersToTaskButtons() {
         const nav = event.target.closest("li").querySelector("nav");
         nav.classList.add("open");
       }
-     else{
-      const div = event.target.closest("li").querySelector("div");
-        div.classList.add("open");
-     }
+    //  else{
+    //   const div = event.target.closest("li").querySelector("div");
+    //     div.classList.add("open");
+    //  }
       // this.classList.add("open");
     });
   });
@@ -103,17 +107,9 @@ function addEventListenersToTaskButtons() {
       const div = event.target.closest("div");
         div.classList.remove("open");
      }
-      // const nav = event.target.closest("nav");
-      // nav.classList.remove("open");
-      // this.classList.remove("open");
     });
   });
-  // icon.onclick = function () {
-  //   this.parentElement.classList.add("open");
-  // };
-  // icon.onclick = function () {
-  //   this.parentElement.classList.remove("open");
-  // };
+  
   document.querySelectorAll(".start").forEach((button) => {
     button.addEventListener("click", startTimer);
   });
@@ -125,9 +121,44 @@ function addEventListenersToTaskButtons() {
   document.querySelectorAll(".rest").forEach((button) => {
     button.addEventListener("click", restTimer);
   });
+
+  document.querySelectorAll(".done").forEach((done) => {
+    done.addEventListener("click", moveFinishedTask);
+  });
+
+  document.querySelectorAll(".uncompleted").forEach((uncompleted) => {
+    uncompleted.addEventListener("click", moveFinishedTaskBack);
+    // location.reload();
+  });
+
   deleteClick();
   
 }; 
+
+function moveFinishedTask(event) {
+
+  const index = event.target.getAttribute("data-index");
+  const task = total[index];  
+  task.completed= true;
+  const d = document.getElementById("container");
+  console.log(d);
+  d.classList.add("open");
+      addEventListenersToTaskButtons(); 
+      saveTasksToLocalStorage();
+      // console.log(addEventListenersToTaskButtons());
+      icon.onclick = function() {
+        location.reload();
+      }
+}
+
+function moveFinishedTaskBack(event) {
+  const index = event.target.getAttribute("data-index");
+  const task = total[index];
+  task.completed= false;
+  addEventListenersToTaskButtons(); 
+  saveTasksToLocalStorage();
+  location.reload();
+}
 
 function startTimer(event) {
   const index = event.target.getAttribute("data-index");
@@ -146,10 +177,10 @@ function startTimer(event) {
       clearInterval(task.timerInterval);
       task.timerInterval = null;
       playAlarm();
-      task.completed = true;
-      const checked = event.target.closest("li").querySelector(".check");
-      console.log(checked);
-      checked.classList.remove("check");
+    //   task.completed = true;
+    //   const checked = event.target.closest("li").querySelector(".check");
+    //   console.log(checked);
+    //   checked.classList.remove("check");
     }
   }, 1000);
 }
@@ -219,7 +250,7 @@ function updateTimeDeadline(task, index) {
     }
   } else {
     formatTime1(task, task.secondsRemaining);
-    console.log(task.deadline);
+    // console.log(task.deadline);
   }
   
 }
@@ -305,7 +336,6 @@ function deleteTask(index) {
 
   displayTasks(total);
   addEventListenersToTaskButtons();
- 
 };
 
 function deleteClick() {
@@ -315,15 +345,10 @@ function deleteClick() {
         if (target.classList.contains("delete")) {
           const index = target.getAttribute("data-index");
           deleteTask(index);
-         
-          const d = document.getElementById("container");
-            console.log(d);
-            d.classList.add("open");
-            addEventListenersToTaskButtons();
-            if(addEventListenersToTaskButtons()){
-             location.reload();
-            }
-          }
+
+       
+           }
+          location.reload();
       });
   });
 };
@@ -393,12 +418,12 @@ function displayTasks(total) {
         <div class="space">
             <strong>${task.name}</strong>
             <span class="icon">
-                <img src="/img/timer.png" alt="dots" class="dots icon">
+                <i class="fa-solid fa-hourglass-half"></i>
             </span>
         </div>
         <nav id="open" class="task-nav">
             <span class="icon">
-                <img src="/img/close.png" alt="x">
+                <i class="fa-solid fa-x"></i>
             </span>
             <div id="timerValue">
                 <div class="value">
@@ -419,15 +444,23 @@ function displayTasks(total) {
               <p class="para">${task.valuePriority}</p>
            </div>
         </div>
-       
+       <div class="status">
+            <div>Status : </div>
+            <i class="fa-solid fa-check"></i>
+          </div>
         <div class="space">
-           
-            <button class="delete" data-index="${i}">Delete</button>
-            <img src="/img/check.png" alt="check" class="check ${task.completed ? 'checked' : ''}">
+             <button class="delete" data-index="${i}">Delete</button>
+            <button class="done" data-index="${i}">Done</button>
+            <button class="uncompleted" data-index="${i}">Uncompleted</button>
         </div>
     </div>
                     `;
-    taskLi.appendChild(taskItem);
+  
+    if (task.completed === true){
+      taskFin.appendChild(taskItem);
+    }else{
+      taskUn.appendChild(taskItem);
+    }
     startTimerTask(i);
   });
   addEventListenersToTaskButtons();

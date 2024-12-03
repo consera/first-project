@@ -108,7 +108,20 @@ body {
 }
 .container #taskLi{
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-rows:  auto auto;
+    list-style: none;
+}
+.container #taskLi label{
+    font-size: 25px;
+    font-family: var(--text-font-family);
+    border-bottom: dashed;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+.container #taskLi #unfinishedTasks ,
+.container #taskLi #finishedTasks {
+    display: grid;
+    grid-template-columns:  50% 50%;
     list-style: none;
 }
 .sortedTasks {
@@ -134,10 +147,15 @@ body {
     display: inline-flex;
     gap: 50px;
 }
-.sortedTasks .taskInfo .taskPriorityDisplay{
+.sortedTasks .taskInfo .taskPriorityDisplay,
+.sortedTasks .status{
     display: inline-flex;
     gap: 30px;
     height: 35px;
+}
+.sortedTasks .status div{
+    color: var(--text-color);
+    font-size: 22px;
 }
 .sortedTasks .taskInfo .taskPriorityDisplay p{
     padding-top: 5px;  
@@ -153,18 +171,19 @@ body {
     margin-left: 70px;
 }
 .sortedTasks .space .icon, 
-nav .icon img, 
-#container .icon img,
-.container img.check{
-    width: 15px;
-    height: 15px;
+nav .icon .fa-x, 
+#container .icon .fa-x{
+    font-size: 20px;
+    width: 25px;
+    height: 25px;
+    text-align: center;
 }
 .sortedTasks .icon {
    margin-left: 25%;
 }
-.sortedTasks .icon .dots{
-    width: 30px;
-    height: 30px;
+.sortedTasks .icon .fa-hourglass-half{
+    font-size: 20px;
+    color: var(--text-color);
     padding: 5px;
     background-color: #fff;
     border-radius: var(--radius-px);
@@ -195,14 +214,16 @@ nav.open{
     padding-left: 15px;
     padding-bottom: 400px ;
 }
-nav .icon img:hover, 
-#container .icon img:hover {
+nav .icon .fa-x:hover, 
+#container .icon .fa-x:hover {
     background-color: rgba(131, 131, 210, 0.459);
     border-radius: var(--radius-px);
 }
 nav button,
 nav .value,
-button.delete {
+button.delete,
+button.done,
+button.uncompleted {
     color: var(--text-color);
     text-decoration: none;
     padding: 5px;
@@ -222,7 +243,7 @@ button.delete {
 }
 #open .icon{
     position: relative;
-    left: -90px;
+    left: -100px;
 }
 nav button{
     margin-top: 20px;
@@ -246,7 +267,9 @@ nav .value{
 }
 .container #tasks ul li button:hover, 
 nav button:hover,
-button.delete:hover {
+button.delete:hover,
+button.done:hover,
+button.uncompleted:hover {
    background-color: rgba(131, 131, 210, 0.459);
    border-radius: var(--radius-px);
 }
@@ -272,8 +295,9 @@ button.delete:hover {
   #container .icon{
    position: absolute;
   }
-  #container .icon img{
+  #container .icon .fa-x{
      position: fixed;
+     font-size: 20px;
     left: 20px;
     top: 20px;
   }
@@ -332,26 +356,31 @@ button.delete:hover {
     80% {transform: translateX(40px);}
     100% {transform: translateX(0);}
   }
-  .container img.check {
-    width: 25px;
-    height: 25px;
-    margin-left: 50px;
+  .container .fa-check {
+    color: var(--text-color);
+   font-size: 35px;
+
+    margin-left: 20px;
   }
   
- img.check{
+#unfinishedTasks .status,
+ #finishedTasks button.done,
+ #finishedTasks .sortedTasks .taskInfo,
+ #unfinishedTasks button.uncompleted{
     display: none;
 }
- img.checked{
+ /* img.checked{
     display: contents; 
 
-}
+} */
 strong{
     font-size: larger;
     font-style: inherit;
     border-bottom: dashed;
 }
-#color{
-  padding: 7px 10px 0 10px;
+#color,
+.sortedTasks .status div{
+  padding: 2px 10px 2px 10px;
   width: fit-content;
   height: fit-content;
   background-color: #fff;
