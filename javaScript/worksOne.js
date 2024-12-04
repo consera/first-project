@@ -19,6 +19,8 @@ let vP = 0;
 window.onload = function() {
   loadTasksFromLocalStorage();
 };
+
+ 
 tasks.addEventListener("submit", (e) => {
   e.preventDefault();
   const currentDate1 = new Date();
@@ -28,7 +30,7 @@ tasks.addEventListener("submit", (e) => {
   const taskDescription = document.getElementById("taskDescription").value;
   const taskPriority = document.getElementById("taskPriority").value;
 
-  
+
   const timeDifference1 = dateTime - currentDate1;
   taskSecondsRemaining = Math.floor(timeDifference1 / 1000);
 
@@ -160,6 +162,7 @@ function moveFinishedTaskBack(event) {
   location.reload();
 }
 
+
 function startTimer(event) {
   const index = event.target.getAttribute("data-index");
   const task = total[index];
@@ -203,10 +206,7 @@ function restTimer(event) {
   updateTimerDisplay(task, index);
 }
 
-function updateTimerDisplay(task, index) {
-  const timerValueElement = document.querySelectorAll(".task-item .value")[index];
-  timerValueElement.textContent = formatTime(task.timerSeconds);
-}
+
 
 function startTimerTask(index) {
   const task = total[index];
@@ -218,11 +218,11 @@ function startTimerTask(index) {
   }, 1000);
 }
 
-function formatTime(seconds) {
-  const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
-  const secondsLeft = (seconds % 60).toString().padStart(2, "0");
-  return `${minutes}:${secondsLeft}`;
 
+function updateTimerDisplay(task, index) {
+  const timerValueElement = document.querySelectorAll(".task-item .value")[index];
+  timerValueElement.textContent = formatTime(task.timerSeconds);
+  console.log(timerValueElement);
 }
 
 function updateTimeDeadline(task, index) {
@@ -255,7 +255,6 @@ function updateTimeDeadline(task, index) {
   
 }
 
-
 // function updateTimeDeadline(task, index) {
 //   if(task.deadline !== null && task.deadline !== ""){
 //       const timerValueElement = document.querySelectorAll(".task-item #color")[index];
@@ -274,6 +273,13 @@ function updateTimeDeadline(task, index) {
 //       // console.log(timerValueElement);
 //     }
 //   }
+
+function formatTime(seconds) {
+  const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
+  const secondsLeft = (seconds % 60).toString().padStart(2, "0");
+  return `${minutes}:${secondsLeft}`;
+
+}
 
 function formatTime1( task , seconds) {
     if(task.testTD === true && task.deadline !== null){

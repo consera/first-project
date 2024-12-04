@@ -2,7 +2,7 @@
 :root{
     --text-color: rgb(2, 2, 11);
     --bars-color: #e1f1e4;
-    --radius-px: 20px;
+    --radius-px: 10px;
     --button-shadow:4px 2px 2px white;
     --shadow: 0px 2px 2px  var(--text-color);
     /* --button-border-color */
@@ -78,13 +78,23 @@ body {
     border: 1px;
 }
 .container #tasks ul li #taskDescription  {
-    height: 150px;
+    height: 200px;
     width: 80%;
+    padding: 15px;
+    resize: none;
+    /* display: block; */
+    /* align-items: center;
+    justify-content: center; */
+    /* text-align: left; */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
     border-radius: var(--radius-px);
     border-color: var(--text-color);
-    border: 1px
+    border: 1px;
+    box-shadow:  var(--shadow);
 }
-.container #tasks ul li #taskDescription:hover,
+
 .container #tasks ul li #taskName:hover,
 .container #tasks ul li input{
     box-shadow:  var(--shadow);
@@ -124,12 +134,24 @@ body {
     grid-template-rows:  auto auto;
     list-style: none;
 }
-.container #taskLi label{
-    font-size: 25px;
-    font-family: var(--text-font-family);
+/* @media (max-width: 1500px) {
+    .container #taskLi{
+    
+        display: ;
+        grid-template-rows:  auto auto;
+        list-style: none;
+    }
+} */
+.container #taskLi  div.dash{
+    padding: 5px;
     border-bottom: dashed;
     margin-bottom: 20px;
     margin-top: 10px;
+}
+.container #taskLi h1{
+    font-size: 25px;
+    padding-bottom: 10px;
+    font-family: var(--text-font-family);
 }
 .container #taskLi #unfinishedTasks ,
 .container #taskLi #finishedTasks {
@@ -145,26 +167,26 @@ body {
     box-shadow: var(--shadow);
     padding: 30px;
     margin: 10px;
-    
+    height: 90%;
+    display: grid;
+    grid-auto-rows: auto 1fr auto;
 }
 .sortedTasks .taskDec{
     margin-bottom: 20px;
 }
-.sortedTasks .taskInfo{
-    display: inline-flex;
-    gap: 40px; 
-    
-
-}
+.sortedTasks .taskInfo,
 .sortedTasks .taskInfo .taskColor{
     display: inline-flex;
     gap: 50px;
+    justify-content: center;
 }
+
 .sortedTasks .taskInfo .taskPriorityDisplay,
 .sortedTasks .status{
     display: inline-flex;
     gap: 30px;
     height: 35px;
+    justify-content: center;
 }
 .sortedTasks .status div{
     color: var(--text-color);
@@ -240,7 +262,7 @@ button.done,
 button.uncompleted {
     color: var(--text-color);
     text-decoration: none;
-    padding: 5px;
+    padding: 7px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -249,7 +271,7 @@ button.uncompleted {
     width: 110px;
     height: 35px;
     background-color: white;
-    border-radius: 20px;
+    border-radius: var(--radius-px);
     border-color: var(--shadow);
     font-weight: bold;
     font-size: 15px;
@@ -289,7 +311,7 @@ button.uncompleted:hover {
 }
 
 #container {
-    position: absolute;
+    position: fixed;
     width: 50%;
     left: 25%;
     padding: 20px;
@@ -388,6 +410,7 @@ button.uncompleted:hover {
     display: contents; 
 
 } */
+
 strong{
     font-size: larger;
     font-style: inherit;
@@ -415,7 +438,8 @@ strong{
 }
 #taskDeadline,
 #taskTimeDeadline{
-    border-radius: 20px;
+    border-radius: var(--radius-px);
+    padding: 5px;
     color: var(--text-color);
     border-color: transparent;
     height: 40px;

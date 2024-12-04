@@ -12,11 +12,13 @@
 <body>
     <div class="container">
         <ul id="taskLi">
-            <label for="unfinishedTasks">Unfinished Tasks</label>
+            <div class="dash"><h1>Uncompleted Tasks</h1></div>
+            <!-- <label for="unfinishedTasks">Unfinished Tasks</label> -->
             <li id="unfinishedTasks">
-                
+
             </li>
-             <label for="finishedTasks">Finished Tasks</label>
+            <div class="dash"><h1>Finished Tasks</h1></div>
+             <!-- <label for="finishedTasks">Finished Tasks</label> -->
             <li id="finishedTasks">
                
             </li>
@@ -47,11 +49,12 @@
                 <ul>
                     <li>
                         <label for="taskName">Task Name</label>
-                        <input type="text" id="taskName" name="taskName" required>
+                        <input type="text" placeholder="Enter the Task Name..." id="taskName" name="taskName" required>
                     </li>
                     <li>
                         <label for="taskDescription">Task Description</label>
-                        <input type="text" id="taskDescription" name="taskDescription">
+                        <textarea placeholder="Enter the Task Description..." name="taskDescription" id="taskDescription"></textarea>
+                        <!-- <input type="text" id="taskDescription" name="taskDescription"> -->
                     </li>
                     <li>
                         <label for="taskPriority" class="priorityLabel">Priority</label>
